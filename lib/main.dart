@@ -58,7 +58,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   children: [
                     TextFormField(
                       decoration: const InputDecoration(
-                        labelText: "username",
+                        labelText: 'username',
                       ),
                       // The validator receives the text that the user has entered.
                       validator: (value) {
@@ -73,7 +73,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     ),
                     TextFormField(
                       decoration: const InputDecoration(
-                        labelText: "email",
+                        labelText: 'email',
                       ),
                       // The validator receives the text that the user has entered.
                       validator: (value) {
