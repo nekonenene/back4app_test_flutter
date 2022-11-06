@@ -25,27 +25,32 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const appTitle = 'People';
+    const appTitle = 'People List';
 
-    return MaterialApp(
-      title: appTitle,
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text(appTitle),
-        ),
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
-            Expanded(
-              flex: 3,
-              child: NewPersonForm(),
-            ),
-            Expanded(
-              flex: 2,
-              child: PeopleList(),
-            ),
-          ],
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: MaterialApp(
+        title: appTitle,
+        home: Scaffold(
+          appBar: AppBar(
+            title: const Text(appTitle),
+          ),
+          body: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: const [
+              Expanded(
+                flex: 3,
+                child: NewPersonForm(),
+              ),
+              Expanded(
+                flex: 2,
+                child: PeopleList(),
+              ),
+            ],
+          ),
         ),
       ),
     );
