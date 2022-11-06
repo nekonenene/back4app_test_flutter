@@ -190,8 +190,10 @@ class PeopleListState extends State<PeopleList> {
         ),
         child: RefreshIndicator(
           onRefresh: () async {
-            people = await fetchPeople();
-            setState(() {});
+            final newPeople = await fetchPeople();
+            setState(() {
+              people = newPeople;
+            });
           },
           child: FutureBuilder<List<ParseObject>>(
             future: fetchPeople(),
