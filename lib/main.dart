@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const appTitle = 'Form Validation Demo';
+    const appTitle = 'People';
 
     return MaterialApp(
       title: appTitle,
@@ -36,7 +36,20 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: const Text(appTitle),
         ),
-        body: const MyCustomForm(),
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
+            Expanded(
+              flex: 3,
+              child: MyCustomForm(),
+            ),
+            Expanded(
+              flex: 2,
+              child: PeopleList(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -130,17 +143,58 @@ class MyCustomFormState extends State<MyCustomForm> {
                             );
                           }
                         },
-                        child: const Text('Submit'),
+                        child: const Text('Add'),
                       ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24),
                     ),
                   ],
                 ),
               ),
             ),
           ],
+        ),
+      );
+  }
+}
+
+// Create a Form widget.
+class PeopleList extends StatefulWidget {
+  const PeopleList({super.key});
+
+  @override
+  PeopleListState createState() {
+    return PeopleListState();
+  }
+}
+
+// Create a corresponding State class.
+// This class holds data related to the form.
+class PeopleListState extends State<PeopleList> {
+  final List<String> entries = <String>['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+
+  @override
+  Widget build(BuildContext context) {
+    // Build a Form widget using the _formKey created above.
+    return
+      Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black12),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Scrollbar(
+          child: ListView.separated(
+            shrinkWrap: true,
+            // physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+            itemCount: entries.length,
+            itemBuilder: (BuildContext context, int index) {
+              return SizedBox(
+                height: 40,
+                child: Center(child: Text('Entry ${entries[index]}')),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+          ),
         ),
       );
   }
