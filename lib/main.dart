@@ -8,9 +8,6 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 var logger = Logger();
 
 void main() async {
-  // To load the .env file contents into dotenv.
-  // NOTE: fileName defaults to .env and can be omitted in this case.
-  // Ensure that the filename corresponds to the path in step 1 and 2.
   await dotenv.load(fileName: '.env');
   logger.d('BACK4APP_APPLICATION_ID: ${dotenv.env['BACK4APP_APPLICATION_ID']}');
 
@@ -80,7 +77,6 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
     return
       Center(
         child: Column(
@@ -173,7 +169,6 @@ class PeopleListState extends State<PeopleList> {
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
     return
       Container(
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 18),
