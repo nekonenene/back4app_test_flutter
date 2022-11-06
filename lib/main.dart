@@ -5,7 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
-var logger = Logger();
+final logger = Logger();
 
 void main() async {
   await dotenv.load(fileName: '.env');
