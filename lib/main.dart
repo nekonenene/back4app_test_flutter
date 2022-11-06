@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 
 void main() => runApp(const MyApp());
 
@@ -79,6 +80,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter email';
+                        }
+                        if (!EmailValidator.validate(value)) {
+                          return 'Please input valid email';
                         }
                         return null;
                       },
