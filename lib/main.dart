@@ -212,9 +212,10 @@ class PeopleListState extends State<PeopleList> {
                     final person = snapshot.data![index];
                     final name = person.get<String>('name');
                     final email = person.get<String>('email');
+                    final createdAt = person.get<DateTime>('createdAt');
 
                     return SizedBox(
-                      height: 60,
+                      height: 70,
                       child: Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -222,6 +223,8 @@ class PeopleListState extends State<PeopleList> {
                             Text('$name', style: const TextStyle(fontWeight: FontWeight.bold)),
                             const Padding(padding: EdgeInsets.only(top: 8)),
                             Text('$email'),
+                            const Padding(padding: EdgeInsets.only(top: 8)),
+                            Text('Created: ${createdAt!.toLocal().toString()}', style: const TextStyle(fontSize: 11)),
                           ],
                         ),
                       ),
@@ -250,7 +253,7 @@ Future<ParseObject> saveNewPerson(String name, String email) async {
 }
 
 Future<List<ParseObject>> fetchPeople() async {
-  QueryBuilder<ParseObject> queryBuilder = QueryBuilder<ParseObject>(ParseObject('Person'));
+  QueryBuilder<ParseObject> queryBuilder = QueryBuilder<ParseObject>(ParseObject('Person'))..orderByDescending('createdAt');
   final ParseResponse apiResponse = await queryBuilder.query();
 
   if (apiResponse.success && apiResponse.results != null) {
