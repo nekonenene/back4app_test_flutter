@@ -139,7 +139,7 @@ class NewPersonFormState extends State<NewPersonForm> {
                             );
                           }
                         },
-                        child: const Text('Add'),
+                        child: const Text('Add Person'),
                       ),
                     ),
                   ],
@@ -149,6 +149,17 @@ class NewPersonFormState extends State<NewPersonForm> {
           ],
         ),
       );
+  }
+}
+
+Future<List<ParseObject>> fetchPeople() async {
+  QueryBuilder<ParseObject> queryBuilder = QueryBuilder<ParseObject>(ParseObject('Person'));
+  final ParseResponse apiResponse = await queryBuilder.query();
+
+  if (apiResponse.success && apiResponse.results != null) {
+    return apiResponse.results as List<ParseObject>;
+  } else {
+    return [] as List<ParseObject>;
   }
 }
 
@@ -177,18 +188,53 @@ class PeopleListState extends State<PeopleList> {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Scrollbar(
-          child: ListView.separated(
-            shrinkWrap: true,
-            // physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
-            itemCount: entries.length,
-            itemBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: 40,
-                child: Center(child: Text('Entry ${entries[index]}')),
+          child: FutureBuilder<List<ParseObject>>(
+            future: fetchPeople(),
+            builder: (BuildContext context, AsyncSnapshot<List<ParseObject>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: Text('Connecting...'),
+                );
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(snapshot.error.toString()),
+                );
+              }
+              if (snapshot.hasData) {
+                return ListView.separated(
+                  shrinkWrap: true,
+                  // physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    logger.d(index);
+                    final person = snapshot.data![index];
+                    final name = person.get<String>('name');
+                    final email = person.get<String>('email');
+
+                    return SizedBox(
+                      height: 60,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('$name', style: const TextStyle(fontWeight: FontWeight.bold)),
+                            const Padding(padding: EdgeInsets.only(top: 8)),
+                            Text('$email'),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                );
+              }
+
+              return const Center(
+                child: Text('Failed to fetch data...'),
               );
-            },
-            separatorBuilder: (BuildContext context, int index) => const Divider(),
+            }
           ),
         ),
       );
