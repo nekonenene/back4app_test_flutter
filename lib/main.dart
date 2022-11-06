@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           children: const [
             Expanded(
               flex: 3,
-              child: MyCustomForm(),
+              child: NewPersonForm(),
             ),
             Expanded(
               flex: 2,
@@ -53,23 +53,23 @@ class MyApp extends StatelessWidget {
 }
 
 // Create a Form widget.
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({super.key});
+class NewPersonForm extends StatefulWidget {
+  const NewPersonForm({super.key});
 
   @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
+  NewPersonFormState createState() {
+    return NewPersonFormState();
   }
 }
 
 // Create a corresponding State class.
 // This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
+class NewPersonFormState extends State<NewPersonForm> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //
   // Note: This is a GlobalKey<FormState>,
-  // not a GlobalKey<MyCustomFormState>.
+  // not a GlobalKey<NewPersonFormState>.
   final _formKey = GlobalKey<FormState>();
 
   String username = '';
