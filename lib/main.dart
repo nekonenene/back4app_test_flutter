@@ -132,10 +132,17 @@ class NewPersonFormState extends State<NewPersonForm> {
                         onPressed: () {
                           // Validate returns true if the form is valid, or false otherwise.
                           if (_formKey.currentState!.validate()) {
-                            // If the form is valid, display a snackbar. In the real world,
-                            // you'd often call a server or save the information in a database.
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Hello, $username!!\nYour email is $email')),
+                            saveNewPerson(username, email).then((person) {
+                              _formKey.currentState!.reset();
+                              // If the form is valid, display a snackbar. In the real world,
+                              // you'd often call a server or save the information in a database.
+                              return ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Saved $username ($email)')),
+                              );
+                            }).onError((error, stackTrace) =>
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Failed $error')),
+                              ),
                             );
                           }
                         },
@@ -149,17 +156,6 @@ class NewPersonFormState extends State<NewPersonForm> {
           ],
         ),
       );
-  }
-}
-
-Future<List<ParseObject>> fetchPeople() async {
-  QueryBuilder<ParseObject> queryBuilder = QueryBuilder<ParseObject>(ParseObject('Person'));
-  final ParseResponse apiResponse = await queryBuilder.query();
-
-  if (apiResponse.success && apiResponse.results != null) {
-    return apiResponse.results as List<ParseObject>;
-  } else {
-    return [] as List<ParseObject>;
   }
 }
 
@@ -208,7 +204,6 @@ class PeopleListState extends State<PeopleList> {
                   padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
                   itemCount: snapshot.data!.length,
                   itemBuilder: (BuildContext context, int index) {
-                    logger.d(index);
                     final person = snapshot.data![index];
                     final name = person.get<String>('name');
                     final email = person.get<String>('email');
@@ -240,3 +235,23 @@ class PeopleListState extends State<PeopleList> {
       );
   }
 }
+
+Future<ParseObject> saveNewPerson(String name, String email) async {
+  final person = ParseObject('Person')..set('name', name)..set('email', email);
+  final ParseResponse apiResponse = await person.save();
+
+  logger.i(apiResponse.result);
+  return apiResponse.result as ParseObject;
+}
+
+Future<List<ParseObject>> fetchPeople() async {
+  QueryBuilder<ParseObject> queryBuilder = QueryBuilder<ParseObject>(ParseObject('Person'));
+  final ParseResponse apiResponse = await queryBuilder.query();
+
+  if (apiResponse.success && apiResponse.results != null) {
+    return apiResponse.results as List<ParseObject>;
+  } else {
+    return [] as List<ParseObject>;
+  }
+}
+
