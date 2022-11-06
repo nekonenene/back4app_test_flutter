@@ -177,7 +177,7 @@ class PeopleList extends StatefulWidget {
 // Create a corresponding State class.
 // This class holds data related to the form.
 class PeopleListState extends State<PeopleList> {
-  final List<String> entries = <String>['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+  late List<ParseObject> people;
 
   @override
   Widget build(BuildContext context) {
@@ -188,55 +188,57 @@ class PeopleListState extends State<PeopleList> {
           border: Border.all(color: Colors.black12),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Scrollbar(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            people = await fetchPeople();
+            setState(() {});
+          },
           child: FutureBuilder<List<ParseObject>>(
             future: fetchPeople(),
             builder: (BuildContext context, AsyncSnapshot<List<ParseObject>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: Text('Connecting...'),
-                );
-              }
+              // if (snapshot.connectionState == ConnectionState.waiting) {
+              //   return const Center(child: Text('Connecting...'));
+              // }
               if (snapshot.hasError) {
-                return Center(
-                  child: Text(snapshot.error.toString()),
-                );
+                return Center(child: Text(snapshot.error.toString()));
               }
               if (snapshot.hasData) {
-                return ListView.separated(
-                  shrinkWrap: true,
-                  // physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final person = snapshot.data![index];
-                    final name = person.get<String>('name');
-                    final email = person.get<String>('email');
-                    final createdAt = person.get<DateTime>('createdAt');
+                people = snapshot.data!;
 
-                    return SizedBox(
-                      height: 70,
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text('$name', style: const TextStyle(fontWeight: FontWeight.bold)),
-                            const Padding(padding: EdgeInsets.only(top: 8)),
-                            Text('$email'),
-                            const Padding(padding: EdgeInsets.only(top: 8)),
-                            Text('Created: ${createdAt!.toLocal().toString()}', style: const TextStyle(fontSize: 11)),
-                          ],
+                return Scrollbar(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
+                    itemCount: people.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final person = people[index];
+                      final name = person.get<String>('name');
+                      final email = person.get<String>('email');
+                      final createdAt = person.get<DateTime>('createdAt');
+
+                      return SizedBox(
+                        height: 70,
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('$name', style: const TextStyle(fontWeight: FontWeight.bold)),
+                              const Padding(padding: EdgeInsets.only(top: 8)),
+                              Text('$email'),
+                              const Padding(padding: EdgeInsets.only(top: 8)),
+                              Text('Created: ${createdAt!.toLocal().toString()}', style: const TextStyle(fontSize: 11)),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) => const Divider(),
+                  ),
                 );
               }
 
-              return const Center(
-                child: Text('Failed to fetch data...'),
-              );
+              return const Center(child: Text('Failed to fetch data...'));
             }
           ),
         ),
