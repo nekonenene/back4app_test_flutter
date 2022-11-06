@@ -42,6 +42,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
 
+  String username = '';
+  String email = '';
+
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
@@ -59,9 +62,11 @@ class MyCustomFormState extends State<MyCustomForm> {
                   children: [
                     TextFormField(
                       decoration: const InputDecoration(
-                        labelText: 'username',
+                        labelText: 'Username',
                       ),
-                      // The validator receives the text that the user has entered.
+                      onChanged: (value) {
+                        username = value;
+                      },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter username';
@@ -74,9 +79,11 @@ class MyCustomFormState extends State<MyCustomForm> {
                     ),
                     TextFormField(
                       decoration: const InputDecoration(
-                        labelText: 'email',
+                        labelText: 'Email',
                       ),
-                      // The validator receives the text that the user has entered.
+                      onChanged: (value) {
+                        email = value;
+                      },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter email';
@@ -99,7 +106,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                             // If the form is valid, display a snackbar. In the real world,
                             // you'd often call a server or save the information in a database.
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Processing Data')),
+                              SnackBar(content: Text('Hello, $username!!\nYour email is $email')),
                             );
                           }
                         },
