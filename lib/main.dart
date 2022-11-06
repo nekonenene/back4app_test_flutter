@@ -259,4 +259,3 @@ Future<List<ParseObject>> fetchPeople() async {
     return [] as List<ParseObject>;
   }
 }
-
